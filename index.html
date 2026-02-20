@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>東京旅行計画 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#f8fafb;
+    --surface:#ffffff;
+    --surface-2:#f0f4f7;
+    --border:#e2e8f0;
+    --text:#1e293b;
+    --text-sub:#64748b;
+    --accent:#0ea5e9;
+    --accent-glow:rgba(14,165,233,.2);
+    --green:#10b981;
+    --orange:#f59e0b;
+    --pink:#ec4899;
+    --radius:16px;
+  }
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Noto Sans JP',system-ui,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.7;
+    font-weight:300;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ── Sticky Now Bar ── */
+  .now-bar{
+    position:sticky;top:0;z-index:100;
+    background:rgba(248,250,251,.85);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border);
+    padding:12px 20px;
+    transition:transform .3s;
+  }
+  .now-bar-inner{
+    max-width:640px;margin:0 auto;
+    display:flex;align-items:center;gap:12px;
+    font-size:14px;
+  }
+  .now-dot{
+    width:10px;height:10px;border-radius:50%;
+    background:var(--green);flex-shrink:0;
+    animation:pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.6)}
+    50%{box-shadow:0 0 0 8px rgba(52,211,153,0)}
+  }
+  .now-label{font-weight:500;color:var(--green);white-space:nowrap}
+  .now-text{color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .now-next{color:var(--text-sub);font-size:12px;white-space:nowrap}
+  .now-bar.before-trip .now-dot{background:var(--accent);animation-name:pulse-accent}
+  @keyframes pulse-accent{
+    0%,100%{box-shadow:0 0 0 0 rgba(14,165,233,.6)}
+    50%{box-shadow:0 0 0 8px rgba(14,165,233,0)}
+  }
+  .now-bar.after-trip .now-dot{background:var(--pink);animation:none}
+
+  /* ── Hero ── */
+  .hero{
+    max-width:640px;margin:0 auto;
+    padding:60px 20px 40px;
+    text-align:center;
+  }
+  .hero-date{
+    display:inline-block;
+    font-size:12px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;
+    color:var(--accent);
+    border:1px solid rgba(14,165,233,.3);
+    border-radius:100px;padding:6px 16px;margin-bottom:20px;
+  }
+  .hero h1{
+    font-size:clamp(28px,7vw,42px);
+    font-weight:700;letter-spacing:-.02em;
+    line-height:1.3;margin-bottom:12px;
+  }
+  .hero p{color:var(--text-sub);font-size:15px;max-width:360px;margin:0 auto}
+
+  /* ── Day Section ── */
+  .day-section{
+    max-width:640px;margin:0 auto;
+    padding:0 20px 60px;
+  }
+  .day-header{
+    position:sticky;top:52px;z-index:50;
+    background:rgba(248,250,251,.92);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    padding:16px 0 12px;
+    border-bottom:1px solid var(--border);
+    margin-bottom:24px;
+    display:flex;align-items:baseline;gap:12px;
+  }
+  .day-num{
+    font-size:11px;font-weight:700;letter-spacing:.1em;
+    color:#fff;
+    background:var(--accent);
+    border-radius:6px;padding:4px 10px;
+  }
+  .day-num.day-2{background:var(--green);color:#fff}
+  .day-num.day-3{background:var(--orange);color:#fff}
+  .day-date{font-size:14px;color:var(--text-sub);font-weight:400}
+
+  /* ── Timeline ── */
+  .timeline{position:relative;padding-left:28px}
+  .timeline::before{
+    content:'';position:absolute;left:5px;top:8px;bottom:0;
+    width:1px;background:var(--border);
+  }
+  .tl-item{
+    position:relative;margin-bottom:20px;
+    opacity:0;transform:translateY(20px);
+    transition:opacity .5s ease,transform .5s ease;
+  }
+  .tl-item.visible{opacity:1;transform:translateY(0)}
+  .tl-item::before{
+    content:'';position:absolute;
+    left:-28px;top:10px;
+    width:11px;height:11px;border-radius:50%;
+    background:var(--surface-2);
+    border:2px solid var(--border);
+    z-index:2;
+  }
+  .tl-item.active::before{
+    background:var(--green);border-color:var(--green);
+    box-shadow:0 0 0 4px rgba(52,211,153,.2);
+    animation:dot-pulse 2s ease-in-out infinite;
+  }
+  @keyframes dot-pulse{
+    0%,100%{box-shadow:0 0 0 4px rgba(52,211,153,.2)}
+    50%{box-shadow:0 0 0 8px rgba(52,211,153,0)}
+  }
+  .tl-item.past::before{background:#94a3b8;border-color:#94a3b8}
+
+  .tl-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:16px 18px;
+    box-shadow:0 1px 3px rgba(0,0,0,.04);
+    transition:border-color .3s,box-shadow .3s;
+  }
+  .tl-item.active .tl-card{
+    border-color:rgba(16,185,129,.35);
+    box-shadow:0 4px 24px rgba(16,185,129,.1);
+  }
+  .tl-time{
+    font-size:12px;font-weight:500;
+    color:var(--accent);margin-bottom:4px;
+    letter-spacing:.03em;
+  }
+  .day-2-section .tl-time{color:var(--green)}
+  .day-3-section .tl-time{color:var(--orange)}
+  .tl-title{font-size:16px;font-weight:500;margin-bottom:4px}
+  .tl-desc{font-size:13px;color:var(--text-sub);line-height:1.6}
+  .tl-tag{
+    display:inline-block;margin-top:8px;
+    font-size:11px;font-weight:500;
+    padding:3px 10px;border-radius:100px;
+    background:rgba(14,165,233,.08);color:var(--accent);
+  }
+  .day-2-section .tl-tag{background:rgba(16,185,129,.08);color:var(--green)}
+  .day-3-section .tl-tag{background:rgba(245,158,11,.08);color:var(--orange)}
+  .tl-tag.move{background:rgba(100,116,139,.08);color:var(--text-sub)}
+
+  /* ── Transfer steps ── */
+  .transfer{margin-top:10px}
+  .transfer-step{
+    display:flex;align-items:flex-start;gap:10px;
+    font-size:12px;position:relative;
+    padding-left:18px;padding-bottom:12px;
+  }
+  .transfer-step:last-child{padding-bottom:0}
+  .transfer-step::before{
+    content:'';position:absolute;left:4px;top:6px;
+    width:8px;height:8px;border-radius:50%;
+    border:2px solid var(--accent);background:var(--surface);
+    z-index:1;
+  }
+  .transfer-step::after{
+    content:'';position:absolute;left:7px;top:14px;
+    width:2px;height:calc(100% - 10px);
+    background:var(--border);
+  }
+  .transfer-step:last-child::after{display:none}
+  .transfer-step .ts-time{
+    font-weight:500;color:var(--text);white-space:nowrap;min-width:40px;
+  }
+  .transfer-step .ts-body{flex:1;color:var(--text-sub);line-height:1.5}
+  .transfer-step .ts-line{
+    display:inline-block;
+    font-size:10px;font-weight:700;
+    padding:1px 6px;border-radius:4px;
+    margin-right:4px;color:#fff;
+  }
+  .ts-line.jr{background:#0072bc}
+  .ts-line.kintetsu{background:#c9252d}
+  .ts-line.walk{background:var(--text-sub)}
+  .transfer-step .ts-fare{
+    font-size:11px;color:var(--text-sub);
+    background:var(--surface-2);
+    padding:1px 8px;border-radius:100px;
+    margin-left:4px;white-space:nowrap;
+  }
+
+  /* ── Map link ── */
+  .tl-map{
+    display:inline-flex;align-items:center;gap:5px;
+    margin-top:10px;
+    font-size:12px;font-weight:500;
+    color:var(--accent);
+    text-decoration:none;
+    padding:5px 12px;
+    border:1px solid rgba(14,165,233,.25);
+    border-radius:100px;
+    transition:background .2s,border-color .2s;
+  }
+  .tl-map:hover{background:rgba(14,165,233,.06);border-color:rgba(14,165,233,.4)}
+  .tl-map svg{width:14px;height:14px;flex-shrink:0}
+
+  /* ── Hotel card ── */
+  .hotel-card{
+    background:linear-gradient(135deg,var(--surface-2),var(--surface));
+    border:1px solid var(--border);border-radius:var(--radius);
+    padding:14px 18px;margin-top:8px;
+    font-size:13px;
+  }
+  .hotel-card .label{color:var(--text-sub);font-size:11px;font-weight:500;letter-spacing:.05em;margin-bottom:2px}
+  .hotel-card .name{font-weight:500}
+
+  /* ── Footer ── */
+  .footer{
+    text-align:center;padding:40px 20px 60px;
+    font-size:12px;color:var(--text-sub);
+  }
+
+  /* ── Countdown ── */
+  .countdown{
+    max-width:640px;margin:0 auto;
+    padding:0 20px 48px;text-align:center;
+  }
+  .countdown-num{
+    font-size:clamp(48px,12vw,72px);
+    font-weight:700;
+    background:linear-gradient(135deg,var(--accent),#38bdf8);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;
+    line-height:1;
+  }
+  .countdown-label{font-size:14px;color:var(--text-sub);margin-top:8px}
+
+  /* ── Responsive ── */
+  @media(max-width:480px){
+    .now-bar-inner{font-size:12px;gap:8px}
+    .now-next{display:none}
+    .tl-card{padding:14px 14px}
+  }
+</style>
+</head>
+<body>
+
+<!-- Now Bar -->
+<div class="now-bar" id="nowBar">
+  <div class="now-bar-inner">
+    <div class="now-dot"></div>
+    <span class="now-label" id="nowLabel">NOW</span>
+    <span class="now-text" id="nowText">読み込み中...</span>
+    <span class="now-next" id="nowNext"></span>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-date">2026.02.21 – 02.23</div>
+  <h1>東京旅行計画</h1>
+  <p>大阪発 → 東京・横浜・箱根 2泊3日の旅</p>
+</section>
+
+<!-- Countdown (shown before trip) -->
+<div class="countdown" id="countdown" style="display:none">
+  <div class="countdown-num" id="countdownNum"></div>
+  <div class="countdown-label" id="countdownLabel"></div>
+</div>
+
+<!-- Day 1 -->
+<section class="day-section day-1-section">
+  <div class="day-header">
+    <span class="day-num">DAY 1</span>
+    <span class="day-date">2/21（土）大阪 → 東京 → 横浜</span>
+  </div>
+  <div class="timeline">
+    <div class="tl-item" data-start="2026-02-21T09:50" data-end="2026-02-21T10:50">
+      <div class="tl-card">
+        <div class="tl-time">09:55 → 10:50</div>
+        <div class="tl-title">長尾駅 → 京都駅</div>
+        <div class="tl-desc">長尾駅に集合して京都駅まで乗り継ぎ</div>
+        <div class="transfer">
+          <div class="transfer-step">
+            <span class="ts-time">09:55</span>
+            <div class="ts-body">
+              <strong>長尾（大阪府）</strong><br>
+              <span class="ts-line jr">JR</span>学研都市線快速 同志社前行（3駅）<span class="ts-fare">¥200</span>
+            </div>
+          </div>
+          <div class="transfer-step">
+            <span class="ts-time">10:07</span>
+            <div class="ts-body">
+              <strong>京田辺</strong> 着<br>
+              <span class="ts-line walk">徒歩</span>新田辺駅まで 12分
+            </div>
+          </div>
+          <div class="transfer-step">
+            <span class="ts-time">10:24</span>
+            <div class="ts-body">
+              <strong>新田辺</strong> 発<br>
+              <span class="ts-line kintetsu">近鉄</span>京都線急行 京都行（6駅）<span class="ts-fare">¥490</span>
+            </div>
+          </div>
+          <div class="transfer-step">
+            <span class="ts-time">10:50</span>
+            <div class="ts-body">
+              <strong>京都</strong> 着
+            </div>
+          </div>
+        </div>
+        <span class="tl-tag move">🚃 電車移動</span><span class="tl-tag" style="margin-left:4px">合計 ¥690</span>
+        <br><a class="tl-map" href="https://maps.google.com/maps?q=長尾駅+大阪府" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>長尾駅</a>
+        <a class="tl-map" href="https://maps.google.com/maps?q=京田辺駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>京田辺駅</a>
+        <a class="tl-map" href="https://maps.google.com/maps?q=新田辺駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>新田辺駅</a>
+      </div>
+    </div>
+    <div class="tl-item" data-start="2026-02-21T11:10" data-end="2026-02-21T14:48">
+      <div class="tl-card">
+        <div class="tl-time">11:10 → 14:48</div>
+        <div class="tl-title">京都駅 → 東京駅</div>
+        <div class="tl-desc">こだま720号で東京へ。新幹線の旅を楽しむ</div>
+        <span class="tl-tag move">🚅 新幹線</span>
+        <br><a class="tl-map" href="https://maps.google.com/maps?q=京都駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>京都駅</a>
+        <a class="tl-map" href="https://maps.google.com/maps?q=東京駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>東京駅</a>
+      </div>
+    </div>
+    <div class="tl-item" data-start="2026-02-21T14:48" data-end="2026-02-21T16:00">
+      <div class="tl-card">
+        <div class="tl-time">14:48 → 16:00</div>
+        <div class="tl-title">東京駅 → 新横浜</div>
+        <div class="tl-desc">電車で約1時間移動</div>
+        <span class="tl-tag move">🚃 電車移動</span>
+        <br><a class="tl-map" href="https://maps.google.com/maps?q=新横浜駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>新横浜駅</a>
+      </div>
+    </div>
+    <div class="tl-item" data-start="2026-02-21T16:00" data-end="2026-02-21T21:00">
+      <div class="tl-card">
+        <div class="tl-time">16:00 → 21:00</div>
+        <div class="tl-title">エヴァンゲリオン会場 & コスモクロック</div>
+        <div class="tl-desc">〒222-0033 神奈川県横浜市港北区新横浜3-10<br>エヴァを楽しんだ後、コスモクロック（観覧車）へ</div>
+        <span class="tl-tag">🎡 遊ぶ</span>
+        <br><a class="tl-map" href="https://maps.google.com/maps?q=神奈川県横浜市港北区新横浜3-10" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>会場</a>
+        <a class="tl-map" href="https://maps.google.com/maps?q=コスモクロック21+横浜" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>コスモクロック</a>
+      </div>
+    </div>
+    <div class="tl-item" data-start="2026-02-21T21:00" data-end="2026-02-21T23:00">
+      <div class="tl-card">
+        <div class="tl-time">21:00 → 23:00</div>
+        <div class="tl-title">ホテルへ移動</div>
+        <div class="tl-desc">横浜から浅草方面へ</div>
+        <span class="tl-tag move">🚃 移動</span>
+      </div>
+    </div>
+    <div class="tl-item" data-start="2026-02-21T23:00" data-end="2026-02-22T10:00">
+      <div class="tl-card">
+        <div class="tl-time">23:00</div>
+        <div class="tl-title">チェックイン</div>
+        <div class="hotel-card">
+          <div class="label">HOTEL</div>
+          <div class="name">変なホテルプレミア 東京 浅草田原町</div>
+        </div>
+        <a class="tl-map" href="https://maps.google.com/maps?q=変なホテルプレミア東京浅草田原町" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Google Map</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Day 2 -->
+<section class="day-section day-2-section">
+  <div class="day-header">
+    <span class="day-num day-2">DAY 2</span>
+    <span class="day-date">2/22（日）東京観光</span>
+  </div>
+  <div class="timeline">
+    <div class="tl-item" data-start="2026-02-22T11:00" data-end="2026-02-22T12:00">
+      <div class="tl-card">
+        <div class="tl-time">11:00</div>
+        <div class="tl-title">ひろちゃんと合流</div>
+        <div class="tl-desc">2日目スタート！</div>
+        <span class="tl-tag">👋 合流</span>
+      </div>
+    </div>
+    <div class="tl-item" data-start="2026-02-22T12:00" data-end="2026-02-22T13:00">
+      <div class="tl-card">
+        <div class="tl-time">12:00</div>
+        <div class="tl-title">昼ごはん</div>
+        <div class="tl-desc">みんなでランチ</div>
+        <span class="tl-tag">🍽 グルメ</span>
+      </div>
+    </div>
+    <div class="tl-item" data-start="2026-02-22T13:00" data-end="2026-02-22T14:00">
+      <div class="tl-card">
+        <div class="tl-time">13:00</div>
+        <div class="tl-title">スカイツリーへ移動</div>
+        <div class="tl-desc">徒歩で向かう</div>
+        <span class="tl-tag move">🚶 徒歩</span>
+      </div>
+    </div>
+    <div class="tl-item" data-start="2026-02-22T14:00" data-end="2026-02-22T17:00">
+      <div class="tl-card">
+        <div class="tl-time">14:00 → 17:00</div>
+        <div class="tl-title">ソラマチ・スカイツリー</div>
+        <div class="tl-desc">3時間くらい散策。晩ごはん食べるかも</div>
+        <span class="tl-tag">🗼 観光</span>
+        <br><a class="tl-map" href="https://maps.google.com/maps?q=東京ソラマチ" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>ソラマチ</a>
+        <a class="tl-map" href="https://maps.google.com/maps?q=東京スカイツリー" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>スカイツリー</a>
+      </div>
+    </div>
+    <div class="tl-item" data-start="2026-02-22T17:00" data-end="2026-02-22T19:00">
+      <div class="tl-card">
+        <div class="tl-time">17:00 〜</div>
+        <div class="tl-title">こち亀エリアへ？</div>
+        <div class="tl-desc">亀有方面に移動して聖地巡礼の可能性</div>
+        <span class="tl-tag">📸 散策</span>
+        <br><a class="tl-map" href="https://maps.google.com/maps?q=亀有駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>亀有駅</a>
+      </div>
+    </div>
+    <div class="tl-item" data-start="2026-02-22T19:00" data-end="2026-02-22T23:00">
+      <div class="tl-card">
+        <div class="tl-time">夜</div>
+        <div class="tl-title">首都高ドライブ</div>
+        <div class="tl-desc">夜景を楽しみながらドライブ</div>
+        <span class="tl-tag">🚗 ドライブ</span>
+      </div>
+    </div>
+    <div class="tl-item" data-start="2026-02-22T23:00" data-end="2026-02-23T09:00">
+      <div class="tl-card">
+        <div class="tl-time">夜</div>
+        <div class="tl-title">チェックイン</div>
+        <div class="hotel-card">
+          <div class="label">HOTEL</div>
+          <div class="name">アパホテル 上野稲荷町</div>
+        </div>
+        <a class="tl-map" href="https://maps.google.com/maps?q=アパホテル上野稲荷町駅前" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Google Map</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Day 3 -->
+<section class="day-section day-3-section">
+  <div class="day-header">
+    <span class="day-num day-3">DAY 3</span>
+    <span class="day-date">2/23（月）箱根・小田原</span>
+  </div>
+  <div class="timeline">
+    <div class="tl-item" data-start="2026-02-23T09:00" data-end="2026-02-23T11:00">
+      <div class="tl-card">
+        <div class="tl-time">午前</div>
+        <div class="tl-title">小田急ロマンスカーで箱根へ</div>
+        <div class="tl-desc">上野方面から新宿経由でロマンスカーに乗車</div>
+        <span class="tl-tag move">🚃 ロマンスカー</span>
+        <br><a class="tl-map" href="https://maps.google.com/maps?q=新宿駅+小田急" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>新宿駅</a>
+        <a class="tl-map" href="https://maps.google.com/maps?q=箱根湯本駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>箱根湯本</a>
+      </div>
+    </div>
+    <div class="tl-item" data-start="2026-02-23T11:00" data-end="2026-02-23T18:00">
+      <div class="tl-card">
+        <div class="tl-time">終日</div>
+        <div class="tl-title">箱根・小田原 エヴァ聖地巡礼</div>
+        <div class="tl-desc">エヴァンゲリオンの舞台となった箱根・第3新東京市を巡る</div>
+        <span class="tl-tag">⛩ 聖地巡礼</span>
+        <br><a class="tl-map" href="https://maps.google.com/maps?q=箱根町" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>箱根</a>
+        <a class="tl-map" href="https://maps.google.com/maps?q=小田原駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>小田原駅</a>
+      </div>
+    </div>
+    <div class="tl-item" data-start="2026-02-23T18:00" data-end="2026-02-23T23:59">
+      <div class="tl-card">
+        <div class="tl-time">夕方〜</div>
+        <div class="tl-title">帰路</div>
+        <div class="tl-desc">楽しい旅の思い出を胸に大阪へ帰還</div>
+        <span class="tl-tag move">🚅 帰り</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  Made for 東京旅行 2026 🗼
+</footer>
+
+<script>
+const SCHEDULE = [
+  {start:'2026-02-21T09:50',end:'2026-02-21T10:50',title:'長尾駅 集合・移動中',next:'新幹線で東京へ'},
+  {start:'2026-02-21T11:10',end:'2026-02-21T14:48',title:'こだま720 京都→東京',next:'東京駅から横浜へ'},
+  {start:'2026-02-21T14:48',end:'2026-02-21T16:00',title:'東京→新横浜 移動中',next:'エヴァ会場'},
+  {start:'2026-02-21T16:00',end:'2026-02-21T21:00',title:'エヴァ会場 & コスモクロック',next:'ホテルへ移動'},
+  {start:'2026-02-21T21:00',end:'2026-02-21T23:00',title:'ホテルへ移動中',next:'チェックイン'},
+  {start:'2026-02-21T23:00',end:'2026-02-22T10:00',title:'変なホテルプレミア 浅草田原町',next:'明日はひろちゃんと合流'},
+  {start:'2026-02-22T11:00',end:'2026-02-22T12:00',title:'ひろちゃんと合流',next:'昼ごはん'},
+  {start:'2026-02-22T12:00',end:'2026-02-22T13:00',title:'昼ごはん中',next:'スカイツリーへ'},
+  {start:'2026-02-22T13:00',end:'2026-02-22T14:00',title:'スカイツリーへ徒歩移動中',next:'ソラマチ・スカイツリー'},
+  {start:'2026-02-22T14:00',end:'2026-02-22T17:00',title:'ソラマチ・スカイツリー',next:'こち亀エリア？'},
+  {start:'2026-02-22T17:00',end:'2026-02-22T19:00',title:'こち亀エリア散策',next:'首都高ドライブ'},
+  {start:'2026-02-22T19:00',end:'2026-02-22T23:00',title:'首都高ドライブ中',next:'ホテルへ'},
+  {start:'2026-02-22T23:00',end:'2026-02-23T09:00',title:'アパホテル 上野稲荷町',next:'明日は箱根へ'},
+  {start:'2026-02-23T09:00',end:'2026-02-23T11:00',title:'ロマンスカーで箱根へ',next:'エヴァ聖地巡礼'},
+  {start:'2026-02-23T11:00',end:'2026-02-23T18:00',title:'箱根・小田原 エヴァ聖地巡礼',next:'帰路'},
+  {start:'2026-02-23T18:00',end:'2026-02-23T23:59',title:'帰路（大阪へ）',next:'おつかれさま！'},
+];
+
+const TRIP_START = new Date('2026-02-21T09:50');
+const TRIP_END = new Date('2026-02-23T23:59');
+
+function updateNow() {
+  const now = new Date();
+  const bar = document.getElementById('nowBar');
+  const label = document.getElementById('nowLabel');
+  const text = document.getElementById('nowText');
+  const next = document.getElementById('nowNext');
+  const cd = document.getElementById('countdown');
+  const cdNum = document.getElementById('countdownNum');
+  const cdLabel = document.getElementById('countdownLabel');
+
+  // Before trip
+  if (now < TRIP_START) {
+    bar.className = 'now-bar before-trip';
+    const diff = TRIP_START - now;
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    label.textContent = 'SOON';
+    text.textContent = '旅行まであと少し！';
+    next.textContent = '2/21 09:50 出発';
+    cd.style.display = '';
+    if (days > 0) {
+      cdNum.textContent = days;
+      cdLabel.textContent = `日と${hours}時間で出発`;
+    } else {
+      cdNum.textContent = hours;
+      cdLabel.textContent = '時間で出発';
+    }
+    markTimeline(null);
+    return;
+  }
+
+  // After trip
+  if (now > TRIP_END) {
+    bar.className = 'now-bar after-trip';
+    label.textContent = 'END';
+    text.textContent = 'おつかれさま！最高の旅だったね 🎉';
+    next.textContent = '';
+    cd.style.display = 'none';
+    markTimeline('all-done');
+    return;
+  }
+
+  // During trip
+  cd.style.display = 'none';
+  bar.className = 'now-bar';
+  let current = null;
+  for (const s of SCHEDULE) {
+    const st = new Date(s.start);
+    const en = new Date(s.end);
+    if (now >= st && now < en) { current = s; break; }
+  }
+
+  if (current) {
+    label.textContent = 'NOW';
+    text.textContent = current.title;
+    next.textContent = current.next ? `Next → ${current.next}` : '';
+    markTimeline(current.start);
+  } else {
+    // Between events
+    let nextEvent = null;
+    for (const s of SCHEDULE) {
+      if (new Date(s.start) > now) { nextEvent = s; break; }
+    }
+    label.textContent = 'FREE';
+    text.textContent = '自由時間';
+    next.textContent = nextEvent ? `Next → ${nextEvent.title}` : '';
+    markTimeline(null, now);
+  }
+}
+
+function markTimeline(activeStart, currentTime) {
+  const items = document.querySelectorAll('.tl-item');
+  const now = currentTime || new Date();
+  items.forEach(item => {
+    const s = new Date(item.dataset.start);
+    const e = new Date(item.dataset.end);
+    item.classList.remove('active', 'past');
+    if (activeStart === 'all-done') {
+      item.classList.add('past');
+    } else if (activeStart && item.dataset.start === activeStart) {
+      item.classList.add('active');
+    } else if (now > e) {
+      item.classList.add('past');
+    }
+  });
+}
+
+// Scroll animation
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.tl-item').forEach(el => observer.observe(el));
+
+// Init & interval
+updateNow();
+setInterval(updateNow, 60000);
+</script>
+</body>
+</html>
