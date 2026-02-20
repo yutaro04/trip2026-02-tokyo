@@ -143,18 +143,31 @@
   }
   .tl-item.past::before{background:#94a3b8;border-color:#94a3b8}
 
+  /* ── Card ── */
   .tl-card{
     background:var(--surface);
     border:1px solid var(--border);
     border-radius:var(--radius);
-    padding:16px 18px;
     box-shadow:0 1px 3px rgba(0,0,0,.04);
     transition:border-color .3s,box-shadow .3s;
+    overflow:hidden;
   }
   .tl-item.active .tl-card{
     border-color:rgba(16,185,129,.35);
     box-shadow:0 4px 24px rgba(16,185,129,.1);
   }
+  /* Card image - hero style at top */
+  .tl-card > img{
+    width:100%;
+    height:200px;
+    object-fit:cover;
+    display:block;
+  }
+  /* Card body - all content below image */
+  .tl-card-body{
+    padding:16px 18px;
+  }
+
   .tl-time{
     font-size:12px;font-weight:500;
     color:var(--accent);margin-bottom:4px;
@@ -173,6 +186,36 @@
   .day-2-section .tl-tag{background:rgba(16,185,129,.08);color:var(--green)}
   .day-3-section .tl-tag{background:rgba(245,158,11,.08);color:var(--orange)}
   .tl-tag.move{background:rgba(100,116,139,.08);color:var(--text-sub)}
+
+  /* ── Note / footnote ── */
+  .tl-note{
+    margin-top:8px;padding:8px 12px;
+    font-size:11px;line-height:1.6;
+    color:var(--text-sub);
+    background:var(--surface-2);
+    border-left:3px solid var(--border);
+    border-radius:0 8px 8px 0;
+  }
+  .tl-note::before{content:'※ '}
+
+  /* ── Seat info ── */
+  .tl-seat{
+    display:inline-flex;align-items:center;gap:4px;
+    margin-top:6px;
+    font-size:12px;font-weight:500;
+    color:var(--text);
+    background:var(--surface-2);
+    padding:4px 10px;border-radius:8px;
+  }
+  .tl-seat svg{width:14px;height:14px;color:var(--accent)}
+
+  /* ── Info list ── */
+  .tl-info{
+    margin-top:8px;font-size:12px;color:var(--text-sub);line-height:1.7;
+  }
+  .tl-info dt{font-weight:500;color:var(--text);display:inline}
+  .tl-info dd{display:inline;margin:0}
+  .tl-info .info-row{margin-bottom:4px}
 
   /* ── Transfer steps ── */
   .transfer{margin-top:10px}
@@ -217,7 +260,7 @@
   /* ── Map link ── */
   .tl-map{
     display:inline-flex;align-items:center;gap:5px;
-    margin-top:10px;
+    margin-top:10px;margin-right:4px;
     font-size:12px;font-weight:500;
     color:var(--accent);
     text-decoration:none;
@@ -238,6 +281,49 @@
   }
   .hotel-card .label{color:var(--text-sub);font-size:11px;font-weight:500;letter-spacing:.05em;margin-bottom:2px}
   .hotel-card .name{font-weight:500}
+
+  /* ── Model course route ── */
+  .route-box{
+    margin-top:12px;
+    background:var(--surface-2);
+    border-radius:12px;
+    padding:14px 16px;
+    font-size:12px;
+    line-height:1.6;
+  }
+  .route-box .route-label{
+    font-size:11px;font-weight:700;letter-spacing:.06em;
+    color:var(--orange);margin-bottom:8px;
+    display:flex;align-items:center;gap:4px;
+  }
+  .route-stops{
+    display:flex;flex-wrap:wrap;align-items:center;gap:4px 2px;
+  }
+  .route-stop{
+    display:inline-flex;align-items:center;gap:2px;
+    font-weight:500;color:var(--text);
+    background:var(--surface);
+    padding:3px 8px;border-radius:6px;
+    font-size:11px;
+    border:1px solid var(--border);
+    white-space:nowrap;
+  }
+  .route-stop .stop-num{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:16px;height:16px;border-radius:50%;
+    background:var(--orange);color:#fff;
+    font-size:9px;font-weight:700;margin-left:3px;
+    flex-shrink:0;
+  }
+  .route-transport{
+    font-size:10px;color:var(--text-sub);
+    white-space:nowrap;
+  }
+  .route-note{
+    margin-top:8px;font-size:11px;color:var(--text-sub);line-height:1.5;
+  }
+  .route-note a{color:var(--orange);text-decoration:none;border-bottom:1px solid rgba(245,158,11,.3)}
+  .route-note a:hover{border-bottom-color:var(--orange)}
 
   /* ── Footer ── */
   .footer{
@@ -264,7 +350,9 @@
   @media(max-width:480px){
     .now-bar-inner{font-size:12px;gap:8px}
     .now-next{display:none}
-    .tl-card{padding:14px 14px}
+    .tl-card-body{padding:14px}
+    .tl-card > img{height:160px}
+    .route-stops{gap:3px 2px}
   }
 </style>
 </head>
@@ -300,94 +388,169 @@
     <span class="day-date">2/21（土）大阪 → 東京 → 横浜</span>
   </div>
   <div class="timeline">
+
     <div class="tl-item" data-start="2026-02-21T09:50" data-end="2026-02-21T10:50">
       <div class="tl-card">
-        <div class="tl-time">09:55 → 10:50</div>
-        <div class="tl-title">長尾駅 → 京都駅</div>
-        <div class="tl-desc">長尾駅に集合して京都駅まで乗り継ぎ</div>
-        <div class="transfer">
-          <div class="transfer-step">
-            <span class="ts-time">09:55</span>
-            <div class="ts-body">
-              <strong>長尾（大阪府）</strong><br>
-              <span class="ts-line jr">JR</span>学研都市線快速 同志社前行（3駅）<span class="ts-fare">¥200</span>
+        <div class="tl-card-body">
+          <div class="tl-time">09:55 → 10:50</div>
+          <div class="tl-title">長尾駅 → 京都駅</div>
+          <div class="tl-desc">長尾駅に集合して京都駅まで乗り継ぎ</div>
+          <div class="transfer">
+            <div class="transfer-step">
+              <span class="ts-time">09:55</span>
+              <div class="ts-body">
+                <strong>長尾（大阪府）</strong><br>
+                <span class="ts-line jr">JR</span>学研都市線快速 同志社前行（3駅）<span class="ts-fare">¥200</span>
+              </div>
+            </div>
+            <div class="transfer-step">
+              <span class="ts-time">10:07</span>
+              <div class="ts-body">
+                <strong>京田辺</strong> 着<br>
+                <span class="ts-line walk">徒歩</span>新田辺駅まで 12分
+              </div>
+            </div>
+            <div class="transfer-step">
+              <span class="ts-time">10:24</span>
+              <div class="ts-body">
+                <strong>新田辺</strong> 発<br>
+                <span class="ts-line kintetsu">近鉄</span>京都線急行 京都行（6駅）<span class="ts-fare">¥490</span>
+              </div>
+            </div>
+            <div class="transfer-step">
+              <span class="ts-time">10:50</span>
+              <div class="ts-body">
+                <strong>京都</strong> 着
+              </div>
             </div>
           </div>
-          <div class="transfer-step">
-            <span class="ts-time">10:07</span>
-            <div class="ts-body">
-              <strong>京田辺</strong> 着<br>
-              <span class="ts-line walk">徒歩</span>新田辺駅まで 12分
-            </div>
-          </div>
-          <div class="transfer-step">
-            <span class="ts-time">10:24</span>
-            <div class="ts-body">
-              <strong>新田辺</strong> 発<br>
-              <span class="ts-line kintetsu">近鉄</span>京都線急行 京都行（6駅）<span class="ts-fare">¥490</span>
-            </div>
-          </div>
-          <div class="transfer-step">
-            <span class="ts-time">10:50</span>
-            <div class="ts-body">
-              <strong>京都</strong> 着
-            </div>
-          </div>
+          <span class="tl-tag move">🚃 電車移動</span><span class="tl-tag" style="margin-left:4px">合計 ¥690</span>
+          <br>
+          <a class="tl-map" href="https://maps.google.com/maps?q=長尾駅+大阪府" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>長尾駅</a>
+          <a class="tl-map" href="https://maps.google.com/maps?q=京田辺駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>京田辺駅</a>
+          <a class="tl-map" href="https://maps.google.com/maps?q=新田辺駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>新田辺駅</a>
         </div>
-        <span class="tl-tag move">🚃 電車移動</span><span class="tl-tag" style="margin-left:4px">合計 ¥690</span>
-        <br><a class="tl-map" href="https://maps.google.com/maps?q=長尾駅+大阪府" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>長尾駅</a>
-        <a class="tl-map" href="https://maps.google.com/maps?q=京田辺駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>京田辺駅</a>
-        <a class="tl-map" href="https://maps.google.com/maps?q=新田辺駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>新田辺駅</a>
       </div>
     </div>
-    <div class="tl-item" data-start="2026-02-21T11:10" data-end="2026-02-21T14:48">
+
+    <div class="tl-item" data-start="2026-02-21T11:10" data-end="2026-02-21T14:29">
       <div class="tl-card">
-        <div class="tl-time">11:10 → 14:48</div>
-        <div class="tl-title">京都駅 → 東京駅</div>
-        <div class="tl-desc">こだま720号で東京へ。新幹線の旅を楽しむ</div>
-        <span class="tl-tag move">🚅 新幹線</span>
-        <br><a class="tl-map" href="https://maps.google.com/maps?q=京都駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>京都駅</a>
-        <a class="tl-map" href="https://maps.google.com/maps?q=東京駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>東京駅</a>
+        <img src="images/img.png">
+        <div class="tl-card-body">
+          <div class="tl-time">11:10 → 14:29</div>
+          <div class="tl-title">京都駅 → 新横浜駅</div>
+          <div class="tl-desc">こだま720号で新横浜へ</div>
+          <div class="tl-seat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 10h16"/></svg>8号車 13番 C・D席</div>
+          <div class="tl-note">東京行きの切符を購入したが、会場が新横浜のため途中下車（前途無効）。チケットを取り直すよりもこちらの方が安い。</div>
+          <span class="tl-tag move">🚅 新幹線</span>
+          <br>
+          <a class="tl-map" href="https://maps.google.com/maps?q=京都駅+新幹線" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>京都駅</a>
+          <a class="tl-map" href="https://maps.google.com/maps?q=新横浜駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>新横浜駅</a>
+        </div>
       </div>
     </div>
-    <div class="tl-item" data-start="2026-02-21T14:48" data-end="2026-02-21T16:00">
+
+    <div class="tl-item" data-start="2026-02-21T14:29" data-end="2026-02-21T18:00">
       <div class="tl-card">
-        <div class="tl-time">14:48 → 16:00</div>
-        <div class="tl-title">東京駅 → 新横浜</div>
-        <div class="tl-desc">電車で約1時間移動</div>
-        <span class="tl-tag move">🚃 電車移動</span>
-        <br><a class="tl-map" href="https://maps.google.com/maps?q=新横浜駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>新横浜駅</a>
+        <img src="images/img_1.png">
+        <div class="tl-card-body">
+          <div class="tl-time">15:40 集合</div>
+          <div class="tl-title">EVANGELION:30+;<br>30th ANNIVERSARY OF EVANGELION</div>
+          <div class="tl-desc">〒222-0033 神奈川県横浜市港北区新横浜3-10</div>
+          <dl class="tl-info">
+            <div class="info-row"><dt>集合時刻：</dt><dd>15:40〜15:55</dd></div>
+          </dl>
+          <span class="tl-tag">🎬 イベント</span>
+          <br>
+          <a class="tl-map" href="https://maps.google.com/maps?q=神奈川県横浜市港北区新横浜3-10" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>会場</a>
+        </div>
       </div>
     </div>
-    <div class="tl-item" data-start="2026-02-21T16:00" data-end="2026-02-21T21:00">
+
+    <div class="tl-item" data-start="2026-02-21T18:00" data-end="2026-02-21T18:40">
       <div class="tl-card">
-        <div class="tl-time">16:00 → 21:00</div>
-        <div class="tl-title">エヴァンゲリオン会場 & コスモクロック</div>
-        <div class="tl-desc">〒222-0033 神奈川県横浜市港北区新横浜3-10<br>エヴァを楽しんだ後、コスモクロック（観覧車）へ</div>
-        <span class="tl-tag">🎡 遊ぶ</span>
-        <br><a class="tl-map" href="https://maps.google.com/maps?q=神奈川県横浜市港北区新横浜3-10" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>会場</a>
-        <a class="tl-map" href="https://maps.google.com/maps?q=コスモクロック21+横浜" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>コスモクロック</a>
+        <div class="tl-card-body">
+          <div class="tl-time">エヴァ後 → 約40分</div>
+          <div class="tl-title">新横浜 → コスモクロック21</div>
+          <div class="tl-desc">横浜線 or ブルーラインで桜木町駅まで移動</div>
+          <span class="tl-tag move">🚃 電車移動</span>
+          <br>
+          <a class="tl-map" href="https://maps.google.com/maps?q=桜木町駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>桜木町駅</a>
+        </div>
       </div>
     </div>
+
+    <div class="tl-item" data-start="2026-02-21T18:40" data-end="2026-02-21T21:00">
+      <div class="tl-card">
+        <img src="images/img_2.png">
+        <div class="tl-card-body">
+          <div class="tl-time">夜</div>
+          <div class="tl-title">コスモクロック21</div>
+          <div class="tl-desc">よこはまコスモワールドの大観覧車</div>
+          <dl class="tl-info">
+            <div class="info-row"><dt>最終受付：</dt><dd>20:45</dd></div>
+            <div class="info-row"><dt>エヴァ特別演出：</dt><dd>18:00〜21:31</dd></div>
+            <div class="info-row" style="padding-left:1em"><dd>毎時 00分・30分（1回あたり1分間）<br>最終点灯 21:30〜</dd></div>
+          </dl>
+          <span class="tl-tag">🎡 遊ぶ</span>
+          <br>
+          <a class="tl-map" href="https://maps.google.com/maps?q=コスモクロック21+横浜" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>コスモクロック21</a>
+        </div>
+      </div>
+    </div>
+
     <div class="tl-item" data-start="2026-02-21T21:00" data-end="2026-02-21T23:00">
       <div class="tl-card">
-        <div class="tl-time">21:00 → 23:00</div>
-        <div class="tl-title">ホテルへ移動</div>
-        <div class="tl-desc">横浜から浅草方面へ</div>
-        <span class="tl-tag move">🚃 移動</span>
+        <div class="tl-card-body">
+          <div class="tl-time">横浜観光後 → 約50分</div>
+          <div class="tl-title">ホテルへ移動</div>
+          <div class="tl-desc">横浜から浅草方面へ</div>
+          <div class="transfer">
+            <div class="transfer-step">
+              <span class="ts-time">横浜</span>
+              <div class="ts-body">
+                <strong>横浜駅</strong><br>
+                <span class="ts-line jr">JR</span>上野東京ライン
+              </div>
+            </div>
+            <div class="transfer-step">
+              <span class="ts-time">上野</span>
+              <div class="ts-body">
+                <strong>上野駅</strong> 乗り換え<br>
+                <span class="ts-line" style="background:#f89c1c">銀座線</span>東京メトロ銀座線
+              </div>
+            </div>
+            <div class="transfer-step">
+              <span class="ts-time">田原町</span>
+              <div class="ts-body">
+                <strong>田原町駅</strong> 着 → ホテルへ
+              </div>
+            </div>
+          </div>
+          <span class="tl-tag move">🚃 移動 約50分</span>
+          <br>
+          <a class="tl-map" href="https://maps.google.com/maps?q=横浜駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>横浜駅</a>
+          <a class="tl-map" href="https://maps.google.com/maps?q=上野駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>上野駅</a>
+          <a class="tl-map" href="https://maps.google.com/maps?q=田原町駅+東京メトロ" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>田原町駅</a>
+        </div>
       </div>
     </div>
+
     <div class="tl-item" data-start="2026-02-21T23:00" data-end="2026-02-22T10:00">
       <div class="tl-card">
-        <div class="tl-time">23:00</div>
-        <div class="tl-title">チェックイン</div>
-        <div class="hotel-card">
-          <div class="label">HOTEL</div>
-          <div class="name">変なホテルプレミア 東京 浅草田原町</div>
+        <img src="images/img_3.png">
+        <div class="tl-card-body">
+          <div class="tl-time">23:00</div>
+          <div class="tl-title">チェックイン</div>
+          <div class="hotel-card">
+            <div class="label">HOTEL</div>
+            <div class="name">変なホテルプレミア 東京 浅草田原町</div>
+          </div>
+          <a class="tl-map" href="https://maps.google.com/maps?q=変なホテルプレミア東京浅草田原町" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Google Map</a>
         </div>
-        <a class="tl-map" href="https://maps.google.com/maps?q=変なホテルプレミア東京浅草田原町" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Google Map</a>
       </div>
     </div>
+
   </div>
 </section>
 
@@ -398,68 +561,108 @@
     <span class="day-date">2/22（日）東京観光</span>
   </div>
   <div class="timeline">
+
     <div class="tl-item" data-start="2026-02-22T11:00" data-end="2026-02-22T12:00">
       <div class="tl-card">
-        <div class="tl-time">11:00</div>
-        <div class="tl-title">ひろちゃんと合流</div>
-        <div class="tl-desc">2日目スタート！</div>
-        <span class="tl-tag">👋 合流</span>
+        <div class="tl-card-body">
+          <div class="tl-time">起床後</div>
+          <div class="tl-title">ひろちゃんと合流</div>
+          <div class="tl-desc">2日目スタート！</div>
+          <span class="tl-tag">👋 合流</span>
+        </div>
       </div>
     </div>
+
+    <div class="tl-item" data-start="2026-02-22T11:00" data-end="2026-02-22T12:00">
+      <div class="tl-card">
+        <img src="images/img_4.png">
+        <div class="tl-card-body">
+          <div class="tl-time">合流後</div>
+          <div class="tl-title">少し浅草観光</div>
+          <div class="tl-desc">有名な観光地を感じよう！</div>
+          <span class="tl-tag">🚶 お散歩</span>
+        </div>
+      </div>
+    </div>
+
     <div class="tl-item" data-start="2026-02-22T12:00" data-end="2026-02-22T13:00">
       <div class="tl-card">
-        <div class="tl-time">12:00</div>
-        <div class="tl-title">昼ごはん</div>
-        <div class="tl-desc">みんなでランチ</div>
-        <span class="tl-tag">🍽 グルメ</span>
+        <div class="tl-card-body">
+          <div class="tl-time">12:00</div>
+          <div class="tl-title">昼ごはん</div>
+          <div class="tl-desc">みんなでランチ</div>
+          <span class="tl-tag">🍽 グルメ</span>
+        </div>
       </div>
     </div>
+
     <div class="tl-item" data-start="2026-02-22T13:00" data-end="2026-02-22T14:00">
       <div class="tl-card">
-        <div class="tl-time">13:00</div>
-        <div class="tl-title">スカイツリーへ移動</div>
-        <div class="tl-desc">徒歩で向かう</div>
-        <span class="tl-tag move">🚶 徒歩</span>
+        <div class="tl-card-body">
+          <div class="tl-time">13:00</div>
+          <div class="tl-title">スカイツリーへ移動</div>
+          <div class="tl-desc">徒歩で向かう</div>
+          <span class="tl-tag move">🚶 徒歩</span>
+        </div>
       </div>
     </div>
+
     <div class="tl-item" data-start="2026-02-22T14:00" data-end="2026-02-22T17:00">
       <div class="tl-card">
-        <div class="tl-time">14:00 → 17:00</div>
-        <div class="tl-title">ソラマチ・スカイツリー</div>
-        <div class="tl-desc">3時間くらい散策。晩ごはん食べるかも</div>
-        <span class="tl-tag">🗼 観光</span>
-        <br><a class="tl-map" href="https://maps.google.com/maps?q=東京ソラマチ" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>ソラマチ</a>
-        <a class="tl-map" href="https://maps.google.com/maps?q=東京スカイツリー" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>スカイツリー</a>
+        <img src="images/img_5.png" style="object-position: 30% 10%">
+        <div class="tl-card-body">
+          <div class="tl-time">14:00 → 17:00</div>
+          <div class="tl-title">ソラマチ・スカイツリー</div>
+          <div class="tl-desc">3時間くらい散策。晩ごはん食べるかも</div>
+          <span class="tl-tag">🗼 観光</span>
+          <br>
+          <a class="tl-map" href="https://maps.google.com/maps?q=東京ソラマチ" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>ソラマチ</a>
+          <a class="tl-map" href="https://maps.google.com/maps?q=東京スカイツリー" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>スカイツリー</a>
+        </div>
       </div>
     </div>
+
     <div class="tl-item" data-start="2026-02-22T17:00" data-end="2026-02-22T19:00">
       <div class="tl-card">
-        <div class="tl-time">17:00 〜</div>
-        <div class="tl-title">こち亀エリアへ？</div>
-        <div class="tl-desc">亀有方面に移動して聖地巡礼の可能性</div>
-        <span class="tl-tag">📸 散策</span>
-        <br><a class="tl-map" href="https://maps.google.com/maps?q=亀有駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>亀有駅</a>
+        <img src="images/img_6.png" style="object-position: 0 0">
+        <div class="tl-card-body">
+          <div class="tl-time">17:00 〜</div>
+          <div class="tl-title">こち亀エリアへ？</div>
+          <div class="tl-desc">亀有方面に移動して聖地巡礼の可能性</div>
+          <span class="tl-tag">📸 散策</span>
+          <br>
+          <a class="tl-map" href="https://maps.google.com/maps?q=亀有駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>亀有駅</a>
+        </div>
       </div>
     </div>
+
     <div class="tl-item" data-start="2026-02-22T19:00" data-end="2026-02-22T23:00">
       <div class="tl-card">
-        <div class="tl-time">夜</div>
-        <div class="tl-title">首都高ドライブ</div>
-        <div class="tl-desc">夜景を楽しみながらドライブ</div>
-        <span class="tl-tag">🚗 ドライブ</span>
+        <img src="images/img_7.png">
+        <div class="tl-card-body">
+          <div class="tl-time">夜</div>
+          <div class="tl-title">首都高ドライブ</div>
+          <div class="tl-desc">夜景を楽しみながらドライブ</div>
+          <span class="tl-tag">🚗 ドライブ</span>
+        </div>
       </div>
     </div>
+
     <div class="tl-item" data-start="2026-02-22T23:00" data-end="2026-02-23T09:00">
       <div class="tl-card">
-        <div class="tl-time">夜</div>
-        <div class="tl-title">チェックイン</div>
-        <div class="hotel-card">
-          <div class="label">HOTEL</div>
-          <div class="name">アパホテル 上野稲荷町</div>
+        <img src="images/img_8.png" style="object-position: 0 0">
+        <div class="tl-card-body">
+          <div class="tl-time">夜</div>
+          <div class="tl-title">チェックイン</div>
+          <div class="hotel-card">
+            <div class="label">HOTEL</div>
+            <div class="name">アパホテル 上野稲荷町</div>
+          </div>
+          <a class="tl-map" href="https://maps.google.com/maps?q=アパホテル上野稲荷町駅前" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Google Map</a>
         </div>
-        <a class="tl-map" href="https://maps.google.com/maps?q=アパホテル上野稲荷町駅前" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Google Map</a>
       </div>
     </div>
+
   </div>
 </section>
 
@@ -470,34 +673,74 @@
     <span class="day-date">2/23（月）箱根・小田原</span>
   </div>
   <div class="timeline">
+
     <div class="tl-item" data-start="2026-02-23T09:00" data-end="2026-02-23T11:00">
       <div class="tl-card">
-        <div class="tl-time">午前</div>
-        <div class="tl-title">小田急ロマンスカーで箱根へ</div>
-        <div class="tl-desc">上野方面から新宿経由でロマンスカーに乗車</div>
-        <span class="tl-tag move">🚃 ロマンスカー</span>
-        <br><a class="tl-map" href="https://maps.google.com/maps?q=新宿駅+小田急" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>新宿駅</a>
-        <a class="tl-map" href="https://maps.google.com/maps?q=箱根湯本駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>箱根湯本</a>
+        <img src="images/img_9.png">
+        <div class="tl-card-body">
+          <div class="tl-time">午前</div>
+          <div class="tl-title">小田急ロマンスカーで箱根へ</div>
+          <div class="tl-desc">上野方面から新宿経由でロマンスカーに乗車</div>
+          <span class="tl-tag move">🚃 ロマンスカー</span>
+          <br>
+          <a class="tl-map" href="https://maps.google.com/maps?q=新宿駅+小田急" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>新宿駅</a>
+          <a class="tl-map" href="https://maps.google.com/maps?q=箱根湯本駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>箱根湯本</a>
+        </div>
       </div>
     </div>
+
     <div class="tl-item" data-start="2026-02-23T11:00" data-end="2026-02-23T18:00">
       <div class="tl-card">
-        <div class="tl-time">終日</div>
-        <div class="tl-title">箱根・小田原 エヴァ聖地巡礼</div>
-        <div class="tl-desc">エヴァンゲリオンの舞台となった箱根・第3新東京市を巡る</div>
-        <span class="tl-tag">⛩ 聖地巡礼</span>
-        <br><a class="tl-map" href="https://maps.google.com/maps?q=箱根町" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>箱根</a>
-        <a class="tl-map" href="https://maps.google.com/maps?q=小田原駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>小田原駅</a>
+        <img src="images/img_10.png">
+        <div class="tl-card-body">
+          <div class="tl-time">終日</div>
+          <div class="tl-title">箱根・小田原 エヴァ聖地巡礼</div>
+          <div class="tl-desc">エヴァンゲリオンの舞台となった箱根・第3新東京市を巡る</div>
+          <span class="tl-tag">⛩ 聖地巡礼</span>
+          <div class="route-box">
+            <div class="route-label">MODEL COURSE</div>
+            <div class="route-stops">
+              <span class="route-stop">箱根湯本</span>
+              <span class="route-transport">箱根登山鉄道 →</span>
+              <span class="route-stop">強羅<span class="stop-num">6</span></span>
+              <span class="route-transport">ケーブルカー →</span>
+              <span class="route-stop">早雲山</span>
+              <span class="route-transport">ロープウェイ →</span>
+              <span class="route-stop">大涌谷<span class="stop-num">2</span></span>
+              <span class="route-transport">ロープウェイ →</span>
+              <span class="route-stop">桃源台<span class="stop-num">7</span></span>
+              <span class="route-transport">芦ノ湖海賊船 →</span>
+              <span class="route-stop">元箱根<span class="stop-num">4</span></span>
+              <span class="route-transport">→</span>
+              <span class="route-stop">箱根神社<span class="stop-num">5</span></span>
+              <span class="route-transport">箱根登山バス →</span>
+              <span class="route-stop">桃源台<span class="stop-num">3</span></span>
+              <span class="route-transport">箱根登山バス →</span>
+              <span class="route-stop">箱根湯本</span>
+            </div>
+            <div class="route-note">
+              ※ 一部 車でしか難しいコースも含まれます<br>
+              参照：<a href="https://odawara-navi.com/article/detail/397" target="_blank" rel="noopener">小田原・箱根に行かなきゃダメだ…！！【エヴァンゲリオン×箱根】聖地巡礼 観光の旅</a>
+            </div>
+          </div>
+          <br>
+          <a class="tl-map" href="https://maps.google.com/maps?q=箱根町" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>箱根</a>
+          <a class="tl-map" href="https://maps.google.com/maps?q=小田原駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>小田原駅</a>
+        </div>
       </div>
     </div>
+
     <div class="tl-item" data-start="2026-02-23T18:00" data-end="2026-02-23T23:59">
       <div class="tl-card">
-        <div class="tl-time">夕方〜</div>
-        <div class="tl-title">帰路</div>
-        <div class="tl-desc">楽しい旅の思い出を胸に大阪へ帰還</div>
-        <span class="tl-tag move">🚅 帰り</span>
+        <div class="tl-card-body">
+          <div class="tl-time">夕方〜</div>
+          <div class="tl-title">帰路</div>
+          <div class="tl-desc">楽しい旅の思い出を胸に大阪へ帰還</div>
+          <span class="tl-tag move">🚅 帰り</span>
+        </div>
       </div>
     </div>
+
   </div>
 </section>
 
@@ -507,10 +750,11 @@
 
 <script>
 const SCHEDULE = [
-  {start:'2026-02-21T09:50',end:'2026-02-21T10:50',title:'長尾駅 集合・移動中',next:'新幹線で東京へ'},
-  {start:'2026-02-21T11:10',end:'2026-02-21T14:48',title:'こだま720 京都→東京',next:'東京駅から横浜へ'},
-  {start:'2026-02-21T14:48',end:'2026-02-21T16:00',title:'東京→新横浜 移動中',next:'エヴァ会場'},
-  {start:'2026-02-21T16:00',end:'2026-02-21T21:00',title:'エヴァ会場 & コスモクロック',next:'ホテルへ移動'},
+  {start:'2026-02-21T09:50',end:'2026-02-21T10:50',title:'長尾駅 集合・京都へ移動中',next:'新幹線で新横浜へ'},
+  {start:'2026-02-21T11:10',end:'2026-02-21T14:29',title:'こだま720 京都→新横浜（8号車13番C/D）',next:'EVA:30+ 会場へ'},
+  {start:'2026-02-21T14:29',end:'2026-02-21T18:00',title:'EVANGELION:30+ 30th ANNIVERSARY',next:'コスモクロック21へ'},
+  {start:'2026-02-21T18:00',end:'2026-02-21T18:40',title:'新横浜→桜木町 移動中',next:'コスモクロック21'},
+  {start:'2026-02-21T18:40',end:'2026-02-21T21:00',title:'コスモクロック21',next:'ホテルへ移動'},
   {start:'2026-02-21T21:00',end:'2026-02-21T23:00',title:'ホテルへ移動中',next:'チェックイン'},
   {start:'2026-02-21T23:00',end:'2026-02-22T10:00',title:'変なホテルプレミア 浅草田原町',next:'明日はひろちゃんと合流'},
   {start:'2026-02-22T11:00',end:'2026-02-22T12:00',title:'ひろちゃんと合流',next:'昼ごはん'},
